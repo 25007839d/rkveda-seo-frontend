@@ -1,0 +1,1 @@
+export default function StatusBadge({status}){const s=String(status||"unknown").toLowerCase();return <span className={`status-badge status-${s}`}>{s.replaceAll("_"," ")}</span>}

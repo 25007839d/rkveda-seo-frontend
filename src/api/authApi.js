@@ -1,0 +1,1 @@
+import api from"./client";export async function login(email,password){return(await api.post("/auth/login",{email,password})).data}export async function getMe(){return(await api.get("/auth/me")).data}
