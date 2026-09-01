@@ -133,6 +133,7 @@ export default function Websites() {
   // =====================================================
 
   function openDashboard(projectId) {
+    localStorage.setItem("rkveda_current_project_id", String(projectId));
     navigate(`/projects/${projectId}/dashboard`);
   }
 

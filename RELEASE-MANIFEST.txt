@@ -1,0 +1,9 @@
+RKVeda GSC History Sync - Production Frontend
+Release: production-fix-v3
+
+Primary fixes:
+- POST {} instead of null for history sync
+- Backward-compatible syncPerformanceHistory alias
+- Current GSC page uses syncGscHistory
+
+SEO Command Center dashboard link + GSC overview schema compatibility fix included.

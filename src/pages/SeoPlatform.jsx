@@ -1,0 +1,31 @@
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import Layout from '../components/Layout';
+import Loading from '../components/Loading';
+import { getSeoOverview, getContentPlans, createContentPlan, getRecommendations, getReports, createReport } from '../api/seoPlatformApi';
+
+const Card = ({ title, value, sub }) => <div className="stat-card"><small>{title}</small><strong>{value}</strong>{sub && <span>{sub}</span>}</div>;
+
+export default function SeoPlatform() {
+  const { projectId } = useParams();
+  const [data, setData] = useState(null); const [content, setContent] = useState([]); const [recommendations, setRecommendations] = useState([]); const [reports, setReports] = useState([]); const [loading, setLoading] = useState(true); const [error, setError] = useState(''); const [title, setTitle] = useState(''); const [reportName, setReportName] = useState('');
+
+  async function load() {
+    try { setLoading(true); setError(''); const [o,c,r,rep] = await Promise.all([getSeoOverview(projectId),getContentPlans(projectId),getRecommendations(projectId),getReports(projectId)]); setData(o); setContent(c.content || []); setRecommendations(r.recommendations || []); setReports(rep.reports || []); }
+    catch(e){ setError(e.response?.data?.message || e.message || 'Unable to load SEO platform'); } finally { setLoading(false); }
+  }
+  useEffect(()=>{ if(projectId) load(); },[projectId]);
+  if(loading) return <Layout><Loading text="Loading unified SEO platform..."/></Layout>;
+  const counts=data?.counts||{}; const integrations=data?.integrations||{};
+  async function addContent(e){ e.preventDefault(); if(!title.trim()) return; await createContentPlan(projectId,{title:title.trim()}); setTitle(''); load(); }
+  async function queueReport(e){ e.preventDefault(); if(!reportName.trim()) return; await createReport(projectId,{report_name:reportName.trim(),report_type:'overview'}); setReportName(''); load(); }
+  return <Layout><header className="page-header"><div><small>UNIFIED SEO PLATFORM</small><h1>{data?.project?.project_name || 'SEO Command Center'}</h1><p>{data?.project?.website_url}</p></div><div className="header-actions"><Link className="secondary" to={`/projects/${projectId}/dashboard`}>← Dashboard</Link><Link className="secondary" to={`/projects/${projectId}/gsc`}>GSC</Link></div></header>
+  {error && <div className="alert">{error}</div>}
+  <section className="stats"><Link className="stat-card stat-card-link" to={`/projects/${projectId}/seo/keywords`}><Card title="Keywords" value={counts.keywords??0} sub="View keyword intelligence →"/></Link><Link className="stat-card stat-card-link" to={`/projects/${projectId}/seo/backlinks`}><Card title="Backlinks" value={counts.backlinks??0} sub="View backlink intelligence →"/></Link><Link className="stat-card stat-card-link" to={`/projects/${projectId}/seo/competitors`}><Card title="Competitors" value={counts.competitors??0} sub="View competitor intelligence →"/></Link><Card title="Content Plans" value={counts.content??0}/><Card title="Open AI Actions" value={counts.recommendations??0}/></section>
+  <div className="grid"><section className="panel"><div className="panel-head"><div><small>INTEGRATIONS</small><h2>Data connections</h2></div></div><div className="integration-list"><div><b>Google Search Console</b><span>{integrations.gsc?.property_url || 'Not connected'}</span><em className={integrations.gsc?.status==='connected'?'ok':''}>{integrations.gsc?.status || 'not connected'}</em></div><div><b>Google Analytics 4</b><span>{integrations.ga4?.property_name || 'Ready to connect'}</span><em>{integrations.ga4?.status || 'not connected'}</em></div><div><b>Google Business Profile</b><span>{integrations.gbp?.location_name || 'Ready to connect'}</span><em>{integrations.gbp?.status || 'not connected'}</em></div><div><b>Social media</b><span>{integrations.social?.length || 0} connected platforms</span><em>{integrations.social?.length ? 'connected' : 'ready'}</em></div></div></section>
+  <section className="panel"><div className="panel-head"><div><small>CONTENT</small><h2>Content planner</h2></div></div><form className="inline-form" onSubmit={addContent}><input value={title} onChange={e=>setTitle(e.target.value)} placeholder="Content topic / title"/><button className="primary">Add</button></form>{content.length===0?<p className="muted">No content plans yet.</p>:<ul className="simple-list">{content.slice(0,6).map(x=><li key={x.id}><b>{x.title}</b><span>{x.priority} · {x.status}</span></li>)}</ul>}</section></div>
+  <div className="grid"><section className="panel"><div className="panel-head"><div><small>AI SEO</small><h2>Recommendations</h2></div></div>{recommendations.length===0?<p className="muted">Recommendations will appear as connected data sources are analyzed.</p>:<ul className="simple-list">{recommendations.slice(0,8).map(x=><li key={x.id}><b>{x.title}</b><span>{x.priority} · {x.category}</span></li>)}</ul>}</section>
+  <section className="panel"><div className="panel-head"><div><small>REPORTING</small><h2>Client reports</h2></div></div><form className="inline-form" onSubmit={queueReport}><input value={reportName} onChange={e=>setReportName(e.target.value)} placeholder="Monthly SEO Report"/><button className="primary">Queue</button></form>{reports.length>0&&<ul className="simple-list">{reports.slice(0,5).map(x=><li key={x.id}><b>{x.report_name}</b><span>{x.status}</span></li>)}</ul>}</section></div>
+  <section className="panel"><div className="panel-head"><div><small>ROADMAP</small><h2>Modules</h2></div></div><div className="module-grid">{['Technical SEO','Search Console','Analytics 4','Business Profile','Keywords & Content','Backlinks','Competitors','Social Media','AI SEO','Reporting'].map((m,i)=><div key={m}><b>{m}</b><span>{i<2?'Live foundation':'Foundation ready'}</span></div>)}</div></section>
+  </Layout>
+}

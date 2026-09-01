@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Layout from "../components/Layout";
 import Loading from "../components/Loading";
 import StatusBadge from "../components/StatusBadge";
 import RunAuditModal from "../components/RunAuditModal";
 import { getAudits } from "../api/auditApi";
-import { getProject } from "../api/projectApi";
+import { getProject, getProjects } from "../api/projectApi";
 
-const PROJECT_ID = 1;
 const filters = ["all", "completed", "running", "pending", "failed"];
 
 export default function Audits() {
@@ -16,13 +15,16 @@ export default function Audits() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showRunAudit, setShowRunAudit] = useState(false);
+  const { projectId: routeProjectId } = useParams();
+  const [projectId, setProjectId] = useState(routeProjectId ? Number(routeProjectId) : null);
   const [project, setProject] = useState(null);
 
   async function refresh(showLoader = false) {
+    if (!projectId) return;
     try {
       if (showLoader) setLoading(true);
       setError("");
-      const response = await getAudits(PROJECT_ID);
+      const response = await getAudits(projectId);
       setAudits(response.audits || []);
     } catch (err) {
       setError(err.response?.data?.message || "Unable to load audits");
@@ -32,9 +34,47 @@ export default function Audits() {
   }
 
   useEffect(() => {
+    let active = true;
+
+    async function loadProjectContext() {
+      try {
+        const storedId = Number(localStorage.getItem("rkveda_current_project_id"));
+        const candidateId = routeProjectId ? Number(routeProjectId) : storedId;
+
+        if (candidateId) {
+          const response = await getProject(candidateId);
+          if (!active) return;
+          const loadedProject = response?.project;
+          if (!loadedProject?.id) throw new Error("Project not found");
+          setProjectId(Number(loadedProject.id));
+          setProject(loadedProject);
+          localStorage.setItem("rkveda_current_project_id", String(loadedProject.id));
+          return;
+        }
+
+        const response = await getProjects();
+        const firstProject = response?.projects?.[0];
+        if (!firstProject?.id) throw new Error("No website/project found.");
+        if (!active) return;
+        setProjectId(Number(firstProject.id));
+        setProject(firstProject);
+        localStorage.setItem("rkveda_current_project_id", String(firstProject.id));
+      } catch (err) {
+        if (active) {
+          setError(err.response?.data?.message || err.message || "Unable to load website.");
+          setLoading(false);
+        }
+      }
+    }
+
+    loadProjectContext();
+    return () => { active = false; };
+  }, [routeProjectId]);
+
+  useEffect(() => {
+    if (!projectId) return;
     refresh(true);
-    getProject(PROJECT_ID).then(r => setProject(r.project)).catch(() => {});
-  }, []);
+  }, [projectId]);
 
   const hasActive = audits.some(a => ["pending", "running"].includes(a.audit_status));
   useEffect(() => {
@@ -56,7 +96,7 @@ export default function Audits() {
   return (
     <Layout>
       <header>
-        <div><small>AUDIT HISTORY</small><h1>Audits</h1><p>Review and track all SEO audits for this project.</p></div>
+        <div><small>AUDIT HISTORY</small><h1>Audits</h1><p>Review and track all SEO audits for {project?.website_url || "this website"}.</p></div>
         <button className="primary" type="button" onClick={() => setShowRunAudit(true)}>Run New Audit</button>
       </header>
 
@@ -78,7 +118,7 @@ export default function Audits() {
         )}
       </section>
 
-      {showRunAudit && <RunAuditModal project={project || { id: PROJECT_ID, website_url: "" }} onClose={() => setShowRunAudit(false)} onCreated={auditCreated} />}
+      {showRunAudit && <RunAuditModal projectId={projectId} websiteUrl={project?.website_url} onClose={() => setShowRunAudit(false)} onCreated={auditCreated} />}
     </Layout>
   );
 }

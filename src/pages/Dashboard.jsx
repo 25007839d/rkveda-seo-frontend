@@ -68,6 +68,9 @@ export default function Dashboard() {
   // =====================================================
 
   useEffect(() => {
+    if (projectId) {
+      localStorage.setItem("rkveda_current_project_id", String(projectId));
+    }
     refresh(true);
   }, [projectId]);
 
@@ -162,6 +165,13 @@ export default function Dashboard() {
             to="/websites"
           >
             ← My Websites
+          </Link>
+
+          <Link
+            className="secondary"
+            to={`/projects/${projectId}/seo`}
+          >
+            SEO Command Center
           </Link>
 
           <button
@@ -340,6 +350,70 @@ export default function Dashboard() {
           )}
         </section>
       </div>
+
+      {/* =================================================
+          SEO TOOLS
+      ================================================= */}
+
+      <section className="dashboard-tools">
+        <div className="section-heading">
+          <div>
+            <small>SEO TOOLS</small>
+            <h2>Website Performance</h2>
+            <p>Open the tools connected to this website.</p>
+          </div>
+        </div>
+
+        <div className="dashboard-tools-grid">
+          <Link
+            className="dashboard-tool-card"
+            to={`/projects/${projectId}/seo`}
+          >
+            <div className="dashboard-tool-icon">SEO</div>
+            <div className="dashboard-tool-content">
+              <span>UNIFIED SEO PLATFORM</span>
+              <h3>SEO Command Center</h3>
+              <p>
+                Manage SEO data connections, content plans, recommendations,
+                reporting and the full website growth workflow.
+              </p>
+            </div>
+            <strong className="dashboard-tool-arrow">→</strong>
+          </Link>
+
+          <Link
+            className="dashboard-tool-card"
+            to={`/projects/${projectId}/gsc`}
+          >
+            <div className="dashboard-tool-icon">G</div>
+            <div className="dashboard-tool-content">
+              <span>GOOGLE SEARCH CONSOLE</span>
+              <h3>Search Performance</h3>
+              <p>
+                Monitor clicks, impressions, CTR, average position,
+                queries and pages from Google Search.
+              </p>
+            </div>
+            <strong className="dashboard-tool-arrow">→</strong>
+          </Link>
+
+          <Link
+            className="dashboard-tool-card"
+            to={`/projects/${projectId}/audits`}
+          >
+            <div className="dashboard-tool-icon">✓</div>
+            <div className="dashboard-tool-content">
+              <span>TECHNICAL SEO</span>
+              <h3>SEO Audits</h3>
+              <p>
+                Run website audits and review technical SEO issues,
+                warnings and scores.
+              </p>
+            </div>
+            <strong className="dashboard-tool-arrow">→</strong>
+          </Link>
+        </div>
+      </section>
 
       {/* =================================================
           RUN AUDIT MODAL

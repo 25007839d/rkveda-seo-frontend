@@ -23,6 +23,10 @@ export default function RunAuditModal({
       setLoading(true);
       setError("");
 
+      if (!websiteUrl) {
+        throw new Error("Website URL is not loaded yet. Please wait a moment and try again.");
+      }
+
       console.log("Starting audit for project:", projectId);
       console.log("Website:", websiteUrl);
 
@@ -105,7 +109,7 @@ export default function RunAuditModal({
 
           <input
             type="text"
-            value={websiteUrl || "Loading website..."}
+            value={websiteUrl || "Website URL unavailable"}
             readOnly
           />
         </label>
@@ -133,7 +137,7 @@ export default function RunAuditModal({
           <button
             type="button"
             className="primary"
-            disabled={loading || !projectId}
+            disabled={loading || !projectId || !websiteUrl}
             onClick={handleStartAudit}
           >
             {loading ? "Starting..." : "Start Audit"}

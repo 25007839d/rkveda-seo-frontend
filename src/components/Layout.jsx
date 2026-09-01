@@ -1,1 +1,48 @@
-import{NavLink,useNavigate}from"react-router-dom";import{getUser,logout}from"../utils/auth";export default function Layout({children}){const n=useNavigate(),u=getUser();return <div className="app-shell"><aside className="sidebar"><div className="brand"><b>R</b><div><strong>RKVeda</strong><small>SEO</small></div></div><nav><NavLink to="/dashboard">Dashboard</NavLink><NavLink to="/audits">Audits</NavLink></nav><div className="side-bottom"><div className="user"><i>{(u.name||u.email||"U")[0].toUpperCase()}</i><span>{u.name||"User"}<small>{u.email||""}</small></span></div><button onClick={()=>{logout();n("/login",{replace:true})}}>Logout</button></div></aside><main>{children}</main></div>}
+import { NavLink, useNavigate } from "react-router-dom";
+import { getUser, logout } from "../utils/auth";
+
+export default function Layout({ children }) {
+  const navigate = useNavigate();
+  const u = getUser();
+
+  return (
+    <div className="app-shell">
+      <aside className="sidebar">
+        <div className="brand">
+          <b>R</b>
+          <div>
+            <strong>RKVeda</strong>
+            <small>SEO</small>
+          </div>
+        </div>
+
+        <nav>
+          <NavLink to="/dashboard">Dashboard</NavLink>
+          <NavLink to="/websites">Websites</NavLink>
+          <NavLink to="/audits">Audits</NavLink>
+        </nav>
+
+        <div className="side-bottom">
+          <div className="user">
+            <i>{(u.name || u.email || "U")[0].toUpperCase()}</i>
+            <span>
+              {u.name || "User"}
+              <small>{u.email || ""}</small>
+            </span>
+          </div>
+
+          <button
+            onClick={() => {
+              logout();
+              navigate("/login", { replace: true });
+            }}
+          >
+            Logout
+          </button>
+        </div>
+      </aside>
+
+      <main>{children}</main>
+    </div>
+  );
+}

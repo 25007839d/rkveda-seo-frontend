@@ -5,6 +5,8 @@ const api = axios.create({
     import.meta.env.VITE_API_BASE_URL ||
     "https://api.rkveda.in/api",
 
+  timeout: 30000,
+
   headers: {
     "Content-Type": "application/json",
   },
