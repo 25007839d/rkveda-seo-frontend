@@ -1,9 +1,8 @@
-RKVeda GSC History Sync - Production Frontend
-Release: production-fix-v3
-
-Primary fixes:
-- POST {} instead of null for history sync
-- Backward-compatible syncPerformanceHistory alias
-- Current GSC page uses syncGscHistory
-
-SEO Command Center dashboard link + GSC overview schema compatibility fix included.
+RKVeda SEO Intelligence v3.6
+- GSC total/query reconciliation fix carried forward from v3.5
+- Competitor Intelligence CRUD and validation
+- Competitor keyword observations + deduplicated keyword gaps
+- Competitor backlink observations + referring-domain aggregation
+- Backlink opportunity generation from competitor links and lost owned links
+- Opportunity priority based on authority and multi-competitor evidence
+- Opportunity status/delete management

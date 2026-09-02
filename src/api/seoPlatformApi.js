@@ -22,6 +22,12 @@ export const getCompetitorIntelligence = async (projectId) => (await api.get(`/p
 export const createCompetitor = async (projectId, payload) => (await api.post(`/projects/${projectId}/competitors`, payload)).data;
 export const deleteCompetitor = async (id) => (await api.delete(`/competitors/${id}`)).data;
 export const createCompetitorKeyword = async (competitorId, payload) => (await api.post(`/competitors/${competitorId}/keywords`, payload)).data;
+export const updateCompetitorKeyword = async (competitorId, id, payload) => (await api.put(`/competitors/${competitorId}/keywords/${id}`, payload)).data;
+export const deleteCompetitorKeyword = async (competitorId, id) => (await api.delete(`/competitors/${competitorId}/keywords/${id}`)).data;
 export const createCompetitorBacklink = async (competitorId, payload) => (await api.post(`/competitors/${competitorId}/backlinks`, payload)).data;
+export const updateCompetitorBacklink = async (competitorId, id, payload) => (await api.put(`/competitors/${competitorId}/backlinks/${id}`, payload)).data;
+export const deleteCompetitorBacklink = async (competitorId, id) => (await api.delete(`/competitors/${competitorId}/backlinks/${id}`)).data;
 export const createBacklinkOpportunity = async (projectId, payload) => (await api.post(`/projects/${projectId}/seo/backlink-opportunities`, payload)).data;
+export const updateBacklinkOpportunity = async (projectId, id, payload) => (await api.put(`/projects/${projectId}/seo/backlink-opportunities/${id}`, payload)).data;
+export const deleteBacklinkOpportunity = async (projectId, id) => (await api.delete(`/projects/${projectId}/seo/backlink-opportunities/${id}`)).data;
 export const getBacklinkOpportunities = async (projectId) => (await api.get(`/projects/${projectId}/backlink-opportunities`)).data;

@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import Loading from "../components/Loading";
 import { connectGsc, getGscPerformance, getGscStatus, syncGscHistory } from "../api/gscApi";
 import { getProject } from "../api/projectApi";
+import { getGscDateRange } from "../utils/gscDateRange";
 
 function formatNumber(value) {
   return new Intl.NumberFormat("en-IN").format(Number(value || 0));
@@ -104,18 +105,8 @@ export default function GoogleSearchConsole() {
   const [error, setError] = useState("");
   const [range, setRange] = useState("30");
 
-  const dates = useMemo(() => {
-    // GSC final data is delayed, so use yesterday as the default end date.
-    const end = new Date();
-    end.setHours(0, 0, 0, 0);
-    end.setDate(end.getDate() - 1);
-    const start = new Date(end);
-    start.setDate(end.getDate() - (Number(range) - 1));
-    return {
-      startDate: start.toISOString().slice(0, 10),
-      endDate: end.toISOString().slice(0, 10),
-    };
-  }, [range]);
+  const dates = useMemo(() => getGscDateRange(range), [range]);
+  const [country, setCountry] = useState("all");
 
   useEffect(() => {
     const gscError = searchParams.get("gsc_error");
@@ -146,12 +137,13 @@ export default function GoogleSearchConsole() {
       const response = await getGscPerformance(projectId, {
         ...dates,
         dimension: "date",
+        country,
       });
       setPerformance(response);
     } finally {
       setPerformanceLoading(false);
     }
-  }, [dates, projectId, status?.connected]);
+  }, [country, dates, projectId, status?.connected]);
 
   useEffect(() => {
     let active = true;
@@ -320,6 +312,17 @@ export default function GoogleSearchConsole() {
                 <button className="secondary" onClick={handleSyncHistory} disabled={syncingHistory || performanceLoading}>
                   {syncingHistory ? "Syncing..." : "↻ Sync History"}
                 </button>
+                <select value={country} onChange={(e) => setCountry(e.target.value)} aria-label="Country">
+                  <option value="all">All countries</option>
+                  <option value="ind">India</option>
+                  <option value="usa">United States</option>
+                  <option value="gbr">United Kingdom</option>
+                  <option value="can">Canada</option>
+                  <option value="aus">Australia</option>
+                  <option value="are">UAE</option>
+                  <option value="sgp">Singapore</option>
+                  <option value="deu">Germany</option>
+                </select>
                 <select value={range} onChange={(e) => { setRange(e.target.value); setSyncMessage(""); }}>
                   <option value="7">Last 7 days</option>
                   <option value="28">Last 28 days</option>
@@ -351,12 +354,12 @@ export default function GoogleSearchConsole() {
 
             <section className="panel">
               <div className="panel-title"><div><h2>Top Queries</h2><span className="gsc-subtitle">Search terms bringing users to your website</span></div></div>
-              <QueryTable projectId={projectId} dates={dates} />
+              <QueryTable projectId={projectId} dates={dates} country={country} />
             </section>
 
             <section className="panel">
               <div className="panel-title"><div><h2>Top Pages</h2><span className="gsc-subtitle">Pages receiving Google Search traffic</span></div></div>
-              <PageTable projectId={projectId} dates={dates} />
+              <PageTable projectId={projectId} dates={dates} country={country} />
             </section>
           </>
         )}
@@ -365,16 +368,16 @@ export default function GoogleSearchConsole() {
   );
 }
 
-function QueryTable({ projectId, dates }) {
+function QueryTable({ projectId, dates, country }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   useEffect(() => {
     let active = true;
-    getGscPerformance(projectId, { ...dates, dimension: "query" })
+    getGscPerformance(projectId, { ...dates, dimension: "query", country })
       .then((response) => active && setData(response))
       .catch((err) => active && setError(err.response?.data?.message || "Unable to load queries."));
     return () => { active = false; };
-  }, [dates, projectId]);
+  }, [country, dates, projectId]);
   if (error) return <div className="gsc-table-empty">{error}</div>;
   if (!data) return <div className="gsc-table-empty">Loading queries...</div>;
   const rows = (data.rows || []).slice(0, 15);
@@ -382,16 +385,16 @@ function QueryTable({ projectId, dates }) {
   return <div className="table-wrap"><table><thead><tr><th>Query</th><th>Clicks</th><th>Impressions</th><th>CTR</th><th>Position</th></tr></thead><tbody>{rows.map((row, i) => <tr key={i}><td>{getKey(row)}</td><td>{formatNumber(row.clicks)}</td><td>{formatNumber(row.impressions)}</td><td>{formatPercent(Number(row.ctr || 0) * 100)}</td><td>{formatPosition(row.position)}</td></tr>)}</tbody></table></div>;
 }
 
-function PageTable({ projectId, dates }) {
+function PageTable({ projectId, dates, country }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   useEffect(() => {
     let active = true;
-    getGscPerformance(projectId, { ...dates, dimension: "page" })
+    getGscPerformance(projectId, { ...dates, dimension: "page", country })
       .then((response) => active && setData(response))
       .catch((err) => active && setError(err.response?.data?.message || "Unable to load pages."));
     return () => { active = false; };
-  }, [dates, projectId]);
+  }, [country, dates, projectId]);
   if (error) return <div className="gsc-table-empty">{error}</div>;
   if (!data) return <div className="gsc-table-empty">Loading pages...</div>;
   const rows = (data.rows || []).slice(0, 15);

@@ -1245,3 +1245,29 @@
 @media(max-width:760px){.backlink-form{grid-template-columns:1fr}.backlink-toolbar{align-items:stretch;flex-direction:column}.backlink-toolbar>input{width:100%}.backlink-stats{grid-template-columns:repeat(2,1fr)}}
 .stat-card-link{display:block;color:inherit}.inline-form{display:flex;gap:10px}.inline-form input,.intel-form input,.intel-form select,.compact-search{border:1px solid #d1d5db;border-radius:8px;padding:11px 12px;background:#fff;outline:0}.inline-form input{flex:1}.intel-form{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}.intel-form input,.intel-form select{min-width:0}.competitor-chips{display:grid;gap:8px;margin-top:18px}.competitor-chip{display:flex;align-items:center;gap:12px;padding:12px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px}.competitor-chip b{font-size:13px}.competitor-chip span{color:#6b7280;font-size:12px;flex:1}.danger-link{border:0;background:transparent;color:#b91c1c;font-weight:700;cursor:pointer}.simple-list{display:grid;gap:0}.opportunity-row{display:flex;justify-content:space-between;gap:15px;padding:14px 0;border-top:1px solid #eee;font-size:12px}.opportunity-row:first-child{border-top:0}.opportunity-row span{display:block;color:#6b7280;margin-top:4px}.opportunity-row>div:last-child{display:flex;align-items:center;gap:10px}.compact-search{width:220px}.secondary-button{background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer}@media(max-width:1050px){.intel-form{grid-template-columns:repeat(2,1fr)}}@media(max-width:760px){.inline-form,.competitor-chip{flex-direction:column;align-items:stretch}.intel-form{grid-template-columns:1fr}.compact-search{width:100%}}
 .backlink-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:18px 0}.backlink-toolbar>input{border:1px solid #d1d5db;border-radius:8px;padding:11px 12px;min-width:320px}.muted{color:#6b7280;font-size:12px}@media(max-width:760px){.backlink-toolbar{flex-direction:column;align-items:stretch}.backlink-toolbar>input{min-width:0;width:100%}}
+
+
+/* GSC reconciliation is informational, not an error. Keep it subtle and stable. */
+.keyword-reconciliation {
+  margin: -4px 0 18px;
+  padding: 10px 14px;
+  border: 1px solid #dbe3ee;
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.inline-status{border:1px solid #d1d5db;border-radius:7px;padding:6px 8px;background:#fff;font-size:11px;margin-right:8px}.competitor-chip .danger-link{margin-left:auto}
+
+/* v3.7 live SEO provider */
+.provider-panel .panel-title span { display:block; }
+.provider-note { margin-top:12px; font-size:13px; opacity:.78; }
+.status-pill { padding:4px 9px; border-radius:999px; font-size:12px; border:1px solid currentColor; }
+.status-pill.success { color:#16803c; }
+
+
+/* v3.8 free competitor research */
+.free-tools-detail .panel-title span{display:block}.research-guide{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:18px}.research-guide>div{border:1px solid #e5e7eb;border-radius:12px;padding:18px;background:#fafafa}.research-guide>div>b{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#111827;color:#fff;font-size:12px;margin-bottom:12px}.research-guide h3{font-size:14px;margin:0 0 7px}.research-guide p{font-size:12px;line-height:1.65;color:#6b7280;margin:0}.research-guide code{font-size:11px;background:#f3f4f6;border-radius:5px;padding:2px 5px}.free-tool-disclaimer{margin-top:18px;padding:12px 14px;border:1px dashed #d1d5db;border-radius:10px;background:#fafafa;color:#6b7280;font-size:11px;line-height:1.6}.free-tool-disclaimer b{color:#374151}@media(max-width:1000px){.research-guide{grid-template-columns:repeat(2,1fr)}}@media(max-width:640px){.research-guide{grid-template-columns:1fr}}
+
+.free-tool-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:18px}.free-tool-card{display:flex;gap:14px;border:1px solid #e5e7eb;border-radius:12px;padding:18px;background:#fff}.free-tool-icon{width:42px;height:42px;flex:0 0 42px;border-radius:10px;background:#f3f4f6;display:grid;place-items:center;font-size:22px}.free-tool-card small{display:block;color:#6b7280;font-size:10px;font-weight:800;letter-spacing:1px}.free-tool-card h3{margin:5px 0 7px;font-size:16px}.free-tool-card p{margin:0 0 13px;color:#6b7280;font-size:12px;line-height:1.6}.tool-link{display:inline-block;text-decoration:none!important}@media(max-width:700px){.free-tool-grid{grid-template-columns:1fr}}
