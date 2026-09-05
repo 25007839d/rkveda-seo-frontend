@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import Layout from "../components/Layout";
 import Loading from "../components/Loading";
-import { connectGsc, getGscPerformance, getGscStatus, syncGscHistory } from "../api/gscApi";
+import { connectGsc, getGscPerformance, getGscStatus, syncGscHistory, disconnectGsc } from "../api/gscApi";
 import { getProject } from "../api/projectApi";
 import { getGscDateRange } from "../utils/gscDateRange";
 
@@ -234,6 +234,33 @@ export default function GoogleSearchConsole() {
     }
   }
 
+  async function handleDisconnect() {
+    if (!window.confirm("Disconnect Google Search Console for this project? Historical data will be kept, but the Google connection will be removed.")) return;
+    try {
+      setError("");
+      await disconnectGsc(projectId);
+      setStatus({ success: true, connected: false, connection: null });
+      setPerformance(null);
+      setSyncMessage("");
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || "Unable to disconnect Google Search Console.");
+    }
+  }
+
+  async function handleReconnect() {
+    try {
+      setConnecting(true);
+      setError("");
+      await disconnectGsc(projectId);
+      const response = await connectGsc(projectId);
+      if (!response?.authorizationUrl) throw new Error("Google authorization URL was not returned.");
+      window.location.href = response.authorizationUrl;
+    } catch (err) {
+      setConnecting(false);
+      setError(err.response?.data?.message || err.message || "Unable to reconnect Google Search Console.");
+    }
+  }
+
   async function handleRefresh() {
     try {
       setError("");
@@ -267,7 +294,7 @@ export default function GoogleSearchConsole() {
           <div className="header-actions">
             <Link className="secondary" to={`/projects/${projectId}/dashboard`}>← Dashboard</Link>
             {status?.connected ? (
-              <button className="secondary" onClick={handleRefresh} disabled={performanceLoading}>↻ Refresh</button>
+              <><button className="secondary" onClick={handleRefresh} disabled={performanceLoading}>↻ Refresh</button><button className="secondary" onClick={handleReconnect} disabled={connecting}>{connecting ? "Reconnecting..." : "↻ Reconnect"}</button></>
             ) : (
               <button className="primary" onClick={handleConnect} disabled={connecting}>
                 {connecting ? "Connecting..." : "Connect Google"}
@@ -291,6 +318,7 @@ export default function GoogleSearchConsole() {
             {status?.connection?.property_url && (
               <strong className="gsc-property">GSC property: {status.connection.property_url}</strong>
             )}
+            {status?.connected && <div className="connection-actions"><button className="danger-link" onClick={handleDisconnect}>Disconnect</button></div>}
           </div>
         </section>
 

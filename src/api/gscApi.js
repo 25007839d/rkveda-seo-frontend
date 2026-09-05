@@ -31,3 +31,5 @@ export async function getGscHistory(projectId, params = {}) {
 export async function syncPerformanceHistory(projectId, params = {}) {
   return syncGscHistory(projectId, params);
 }
+
+export async function disconnectGsc(projectId) { const { data } = await api.post(`/projects/${projectId}/gsc/disconnect`); return data; }

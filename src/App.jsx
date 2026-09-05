@@ -16,6 +16,11 @@ import SeoPlatform from "./pages/SeoPlatform";
 import KeywordIntelligence from "./pages/KeywordIntelligence";
 import BacklinkIntelligence from "./pages/BacklinkIntelligence";
 import CompetitorIntelligence from "./pages/CompetitorIntelligence";
+import GoogleAnalytics from "./pages/GoogleAnalytics";
+import GoogleBusinessProfile from "./pages/GoogleBusinessProfile";
+import SocialMediaIntelligence from "./pages/SocialMediaIntelligence";
+import GoogleServicesGuide from "./pages/GoogleServicesGuide";
+import SocialProviderGuide from "./pages/SocialProviderGuide";
 
 export default function App() {
   return (
@@ -72,9 +77,14 @@ export default function App() {
 
         {/* Unified SEO Platform */}
         <Route path="/projects/:projectId/seo" element={<SeoPlatform />} />
+        <Route path="/projects/:projectId/google-services-guide" element={<GoogleServicesGuide />} />
+        <Route path="/projects/:projectId/social-api-guide" element={<SocialProviderGuide />} />
         <Route path="/projects/:projectId/seo/keywords" element={<KeywordIntelligence />} />
         <Route path="/projects/:projectId/seo/backlinks" element={<BacklinkIntelligence />} />
         <Route path="/projects/:projectId/seo/competitors" element={<CompetitorIntelligence />} />
+        <Route path="/projects/:projectId/ga4" element={<GoogleAnalytics />} />
+        <Route path="/projects/:projectId/gbp" element={<GoogleBusinessProfile />} />
+        <Route path="/projects/:projectId/seo/social" element={<SocialMediaIntelligence />} />
 
         {/* Google Search Console */}
         <Route
