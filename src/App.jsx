@@ -21,18 +21,23 @@ import GoogleBusinessProfile from "./pages/GoogleBusinessProfile";
 import SocialMediaIntelligence from "./pages/SocialMediaIntelligence";
 import GoogleServicesGuide from "./pages/GoogleServicesGuide";
 import SocialProviderGuide from "./pages/SocialProviderGuide";
+import { GrowthPage, LabsPage } from "./pages/PublicLanding";
 
 export default function App() {
   return (
     <Routes>
       {/* =================================================
-          PUBLIC
+          PUBLIC LANDING PAGES
+          These routes intentionally do NOT require authentication.
       ================================================= */}
 
-      <Route
-        path="/login"
-        element={<Login />}
-      />
+      <Route path="/" element={<GrowthPage />} />
+      <Route path="/digital-growth" element={<GrowthPage />} />
+      <Route path="/seo" element={<GrowthPage />} />
+      <Route path="/labs" element={<LabsPage />} />
+
+      {/* Login remains available for the existing platform. */}
+      <Route path="/login" element={<Login />} />
 
       {/* =================================================
           PROTECTED
@@ -41,17 +46,6 @@ export default function App() {
       <Route
         element={<ProtectedRoute />}
       >
-        {/* Root */}
-        <Route
-          path="/"
-          element={
-            <Navigate
-              to="/websites"
-              replace
-            />
-          }
-        />
-
         {/* Websites */}
         <Route
           path="/websites"

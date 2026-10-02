@@ -8,7 +8,7 @@ const providers = [
     short: "META",
     title: "Facebook + Instagram",
     purpose: "Connect Facebook Pages and Instagram professional accounts through the Meta Graph API.",
-    credentials: ["META_APP_ID", "META_APP_SECRET", "META_REDIRECT_URI"],
+    credentials: ["META_APP_ID", "META_APP_SECRET", "META_REDIRECT_URI", "META_LOGIN_CONFIG_ID (recommended for Facebook Login for Business)"],
     callback: "https://api.rkveda.in/api/social/callback",
     localCallback: "http://localhost:3000/api/social/callback",
     scopes: [
@@ -20,9 +20,9 @@ const providers = [
     ],
     steps: [
       "Create/select the Meta developer app that will be used by RKVeda.",
-      "Add the Facebook Login product and configure the Valid OAuth Redirect URI shown below.",
+      "Add Facebook Login for Business, create a Login Configuration for the permissions/assets you need, and configure the Valid OAuth Redirect URI shown below.",
       "Keep the App ID and App Secret on the RKVeda backend only.",
-      "Request/enable the permissions required by the RKVeda connector: pages_show_list, pages_read_engagement, read_insights, instagram_basic and instagram_manage_insights. Meta may require App Review/Business verification before production access.",
+      "For Facebook Login for Business, put the required permissions/assets into the Meta Login Configuration and copy its Configuration ID into META_LOGIN_CONFIG_ID. The current connector uses the configuration ID when present and keeps the older scope-based flow only as a fallback.",
       "For Facebook, the connecting person must manage a Facebook Page.",
       "For Instagram, use an Instagram professional account linked to a managed Facebook Page.",
       "Add the backend environment variables, restart the API service, then return to RKVeda → Social Media Intelligence.",
